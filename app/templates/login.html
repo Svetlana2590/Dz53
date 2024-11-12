@@ -2,18 +2,19 @@
 {% block content %}
    <h2> Войти в проект </h2>
     <form action="" method="POST" novalidate>
+    {{ form2.hidden_tag() }}
     <p>
-    {{ form.username.label }}<br>
-    {{ form.username(size=4) }}
+        {{ form2.username.label }}<br>
+        {{ form2.username(size=140) }}
     </p>
     <p>
-        {{ form.pasword.label }}<br>
-        {{ form.pasword(size=32) }}
+        {{ form2.pasword.label }}<br>
+        {{ form2.pasword(size=32) }}
     </p>
     <p>
-        {{ form.remember_me() }} {{ form.remember_me.label }}
+        {{ form2.remember_me() }} {{ form2.remember_me.label }}
     </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form2.submit() }}</p>
     </form>
 
 {% endblock %}
