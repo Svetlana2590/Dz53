@@ -21,8 +21,8 @@
     {% endif %}
 {% endwith %}
 
-<a href="/">Index</a>
-<a href="/login">Login</a>
+<a href="{{ url_for('index') }}">Index</a>
+<a href="{{ url_for('login') }}">Login</a>
 {% block content %} {% endblock %}
 </body>
 </html>

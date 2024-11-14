@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, flash, redirect
+from flask import Flask, render_template, flash, redirect, url_for
 
 from forms import LoginForm
 
@@ -24,7 +24,7 @@ def login():
         flash('YES,' + name + ' Flash flask work!!')
         flash('YES, Flash flask work22!!')
         flash('YES, Flash flask work3333!!')
-        return redirect('/')
+        return redirect(url_for('index'))
     return render_template('login.html', form2=form3)
 
 
