@@ -17,11 +17,13 @@ def index():
 def login():
     form3 = LoginForm()
     if form3.validate_on_submit():
-        print(form3.username.data)
+        name=form3.username.data
         print(form3.pasword.data)
         print(form3.remember_me.data)
 
-        # flash('YES')
+        flash('YES,' + name + ' Flash flask work!!')
+        flash('YES, Flash flask work22!!')
+        flash('YES, Flash flask work3333!!')
         return redirect('/')
     return render_template('login.html', form2=form3)
 
