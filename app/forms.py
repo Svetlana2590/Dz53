@@ -3,6 +3,11 @@ from wtforms.validators import DataRequired, Length, Email, ValidationError
 from wtforms import SubmitField, StringField, PasswordField, BooleanField
 
 
+class KupitForm(FlaskForm):
+    kolvo=StringField('Kolvo', validators=[DataRequired()])
+    submit=SubmitField('Купить')
+
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2)])
     pasword = PasswordField('Password', validators=[DataRequired(), Length(min=3, max=4)])

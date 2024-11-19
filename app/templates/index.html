@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-   <h2> Page Index </h2>
-    {% for i in users %}
-    <h5>{{  i.name }}</h5>
+    <h2> Каталог </h2>
+    {% for i in tovars %}
+        <form action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <h5>{{ i.name }}</h5>
+            <h5>{{ i.price }} рублей</h5>
+            <h5>{{ i.ostatok }} штук</h5>
+
+            {{ form.kolvo }}
+            {{ form.submit() }}
+        </form>
+        <hr>
     {% endfor %}
 
 {% endblock %}
