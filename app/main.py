@@ -24,8 +24,8 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    users = User.query.all()
-    return render_template('index.html')
+    tovar = Tovar.query.all()
+    return render_template('index.html', tovars=tovar)
 
 
 @app.route('/login', methods=['GET', 'POST'])

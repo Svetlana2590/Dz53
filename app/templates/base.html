@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Python424</title>
+    <title>Shop ecommerce - FLASK</title>
 </head>
 <body>
-<h1>Hi! I love Python</h1>
+<h1>ФЛАСК магазин</h1>
 <hr>
 {% with message=get_flashed_messages() %}
     {% if message %}
@@ -18,9 +18,9 @@
         </h3>
     {% endif %}
 {% endwith %}
-<a href="{{ url_for('index') }}">Index</a>
-<a href="{{ url_for('login') }}">Login</a>
-<a href="{{ url_for('tovar_add') }}">Add tovar</a>
+<a href="{{ url_for('index') }}">Каталог</a>
+<a href="{{ url_for('login') }}">Аккаунт</a>
+<a href="{{ url_for('tovar_add') }}">Добавить товар</a>
 {% block content %} {% endblock %}
 </body>
 </html>
