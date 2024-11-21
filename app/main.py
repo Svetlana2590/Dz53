@@ -19,6 +19,7 @@ with app.app_context():
     print(have_user)
     if not have_user:
         from seed import seeds
+
         seeds()
 
 
@@ -54,6 +55,24 @@ def tovar_add():
         flash('Товар добавлен')
         return redirect(url_for('index'))
     return render_template('tovar_add.html', form=form)
+
+
+@app.route('/tovar_del/<tovar_id>', methods=['GET', 'POST'])
+def del_tovar(tovar_id: int):
+    data = Tovar.query.get(tovar_id)
+    # data = Tovar.query.select(Tovar.id == tovar_id).one()
+    # data = Tovar.query.where(Tovar.id == tovar_id).one()
+    db.session.delete(data)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
+@app.route('/tovar_new_name/<tovar_id>/<new_name>', methods=['GET', 'POST'])
+def name_tovar(tovar_id: int, new_name: str):
+    data = Tovar.query.get(tovar_id)
+    data.name = new_name
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

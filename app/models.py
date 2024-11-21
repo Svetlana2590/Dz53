@@ -16,7 +16,7 @@ class User(db.Model):
 class Tovar(db.Model):
     __tablename__ = 'tovars'
     id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column(sa.String(255), nullable=False, unique=True, index=True)
+    name = sa.Column(sa.String(255), nullable=False)
     url_photo = sa.Column(sa.String(255), nullable=True)
     price = sa.Column(sa.Integer, nullable=False)
     ostatok=sa.Column(sa.Integer, default=0)
