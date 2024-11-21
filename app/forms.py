@@ -15,3 +15,7 @@ class TovarForm(FlaskForm):
     price = StringField('Price', validators=[DataRequired(), Length(min=1, max=6)])
     ostatok = StringField('Ostatok')
     submit = SubmitField('Add tovar')
+
+
+# class GoTovarForm(FlaskForm):
+#     submit = SubmitField('Перейти на страницу товара')

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -25,6 +25,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
+    # form=GoTovarForm()
     tovar = Tovar.query.all()
     return render_template('index.html', tovars=tovar)
 
@@ -66,6 +67,24 @@ def del_tovar(tovar_id: int):
     db.session.commit()
     return redirect(url_for('index'))
 
+
+@app.route('/tovar_kupit', methods=['GET', 'POST'])
+def tovar_kupit():
+    id = request.args.get('id')
+    print(id)
+    data = Tovar.query.get(id)
+    data.ostatok = data.ostatok - 1
+    db.session.commit()
+    print(data)
+    return redirect(url_for('index'))
+
+@app.route('/tovar_page', methods=['GET', 'POST'])
+def tovar_page():
+    id = request.args.get('id')
+    print(id)
+    data = Tovar.query.get(id)
+    print(data)
+    return render_template('tovar_page.html', data=data)
 
 @app.route('/tovar_new_name/<tovar_id>/<new_name>', methods=['GET', 'POST'])
 def name_tovar(tovar_id: int, new_name: str):

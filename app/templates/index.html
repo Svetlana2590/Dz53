@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-   <h2> Каталог магазина одежды </h2>
-   {% for i in tovars %}
- <h4>{{  i.name }}</h4>
-        <h5>{{  i.price }}</h5>
-        <h5>{{  i.ostatok }}</h5>
-       <hr>
+<h2> Каталог магазина одежды </h2>
+{% for i in tovars %}
+    <h4>{{ i.name }}</h4>
+    <h5>{{ i.price }}</h5>
+    <h5>{{ i.ostatok }}</h5>
+    <a href="{{ url_for('tovar_page', id=i.id) }}">Страница товара</a>
+    <a href="{{ url_for('tovar_kupit', id=i.id) }}">Купить товар</a>
 
-  {% endfor %}
+    <hr>
 
+
+
+{% endfor %}
 {% endblock %}
+
