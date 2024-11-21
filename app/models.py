@@ -1,5 +1,7 @@
 import sqlalchemy as sa
-from main import db, app
+from main import db
+
+
 
 
 class User(db.Model):
@@ -21,5 +23,4 @@ class Tovar(db.Model):
 
 
 
-with app.app_context():
-    db.create_all()
+
