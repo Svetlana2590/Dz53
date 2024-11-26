@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +9,10 @@ from forms import LoginForm, TovarForm
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config['UPLOAD_FOLDER']='app/static'
 db = SQLAlchemy(app)
+
+
 
 migrate = Migrate(app, db)
 
@@ -21,6 +26,8 @@ with app.app_context():
         from seed import seeds
 
         seeds()
+
+
 
 
 @app.route('/')
@@ -47,6 +54,8 @@ def login():
 def tovar_add():
     form = TovarForm()
     if form.validate_on_submit():
+        file = request.files['file']  # загрузка файла для дальнейшей обработки
+        file.save(file.filename)  # сохранение
         name = form.name.data
         price = form.price.data
         ostatok = form.ostatok.data
@@ -92,6 +101,15 @@ def name_tovar(tovar_id: int, new_name: str):
     data.name = new_name
     db.session.commit()
     return redirect(url_for('index'))
+
+
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     if request.method == 'POST':
+#         file = request.files['file']  # загрузка файла для дальнейшей обработки
+#         file.save(os.path.join('app/static', file.filename))  # сохранение
+#
+#         return redirect(request.referrer)
 
 
 if __name__ == '__main__':
