@@ -1,15 +1,17 @@
 import os
-
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-
 from database import Config
 from forms import LoginForm, TovarForm
+import uuid
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config['UPLOAD_FOLDER'] = 'app/static'
+# Добавляем путь сохранения изображения
+# Это так же можно сделать (и правильно сделать) в классе конфиг
+app.config['UPLOAD_FOLDER'] = '/app/static'
+
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
@@ -50,12 +52,16 @@ def login():
 def tovar_add():
     form = TovarForm()
     if form.validate_on_submit():
-        file = request.files['file']  # загрузка файла для дальнейшей обработки
-        file.save(file.filename)  # сохранение
+        # загрузка файла для дальнейшей обработки
+        file = request.files['file']
+
+        # сохранение
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
         name = form.name.data
         price = form.price.data
         ostatok = form.ostatok.data
-        data = Tovar(name=name, price=int(price), ostatok=int(ostatok))
+        data = Tovar(name=name, price=int(price), ostatok=int(ostatok), url_photo=file.filename)
         db.session.add(data)
         db.session.commit()
         flash('Товар добавлен')
