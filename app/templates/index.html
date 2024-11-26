@@ -4,7 +4,7 @@
     {% for i in tovars %}
         <div class="col-md-12 text-center">
             <div class="card">
-                <img class="card-img-top" width="200" height="200" src="..." alt="Здесь будет фото товара. Но потом">
+                <img src="{{ url_for('static', filename=i.url_photo) }}" class="card-img-top" width="200" height="200"/>
                 <div class="card-body">
                     <h5 class="card-title">{{ i.name }}</h5>
                     <p class="card-text">{{ i.price }} руб</p>

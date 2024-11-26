@@ -6,11 +6,12 @@ from database import Config
 from forms import LoginForm, TovarForm
 import uuid
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config.from_object(Config)
 # Добавляем путь сохранения изображения
 # Это так же можно сделать (и правильно сделать) в классе конфиг
 app.config['UPLOAD_FOLDER'] = '/app/static'
+
 
 db = SQLAlchemy(app)
 
@@ -52,6 +53,7 @@ def login():
 def tovar_add():
     form = TovarForm()
     if form.validate_on_submit():
+
         # загрузка файла для дальнейшей обработки
         file = request.files['file']
 
