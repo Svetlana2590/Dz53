@@ -1,5 +1,6 @@
 version: "3.3"
 
+
 services:
   backend:
     build:
@@ -9,12 +10,3 @@ services:
       - ./app:/app
     ports:
       - 8000:8000
-
-  shop2:
-    build:
-      context: .
-      dockerfile: ./app2/Dockerfile
-    volumes:
-      - ./app2:/app2
-    ports:
-      - 8001:8001
