@@ -28,6 +28,8 @@ with app.app_context():
         seeds()
 
 
+
+
 @app.route('/')
 def index():
     # form=GoTovarForm()
