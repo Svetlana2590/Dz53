@@ -65,6 +65,7 @@ def tovar_add():
         save_file_name=new_filename+'.'+rasshirenie
         list_ok=['jpg', 'png']
 
+
         if rasshirenie not in list_ok:
             return 'Ne to!'
 
