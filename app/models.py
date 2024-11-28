@@ -19,6 +19,7 @@ class Tovar(db.Model):
     name = sa.Column(sa.String(255), nullable=False)
     url_photo = sa.Column(sa.String(255), nullable=True)
     price = sa.Column(sa.Integer, nullable=False)
+    is_active = sa.Column(sa.Boolean, default=True)
     ostatok=sa.Column(sa.Integer, default=0)
 
 

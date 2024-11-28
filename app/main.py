@@ -12,7 +12,6 @@ app.config.from_object(Config)
 # Это так же можно сделать (и правильно сделать) в классе конфиг
 app.config['UPLOAD_FOLDER'] = '/app/static'
 
-
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
@@ -62,16 +61,14 @@ def tovar_add():
         rasshirenie = file.filename.split(".")[-1]
         print(rasshirenie)
         new_filename = uuid.uuid4().hex
-        save_file_name=new_filename+'.'+rasshirenie
-        list_ok=['jpg', 'png']
-
+        save_file_name = new_filename + '.' + rasshirenie
+        list_ok = ['jpg', 'png']
 
         if rasshirenie not in list_ok:
             return 'Ne to!'
 
         # сохранение
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], save_file_name))
-
 
         name = form.name.data
         price = form.price.data
