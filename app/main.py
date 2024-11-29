@@ -94,7 +94,7 @@ def tovar_add():
         name = form.name.data
         price = form.price.data
         ostatok = form.ostatok.data
-        data = Tovar(name=name, price=int(price), ostatok=int(ostatok), url_photo=file.filename)
+        data = Tovar(name=name, price=int(price), ostatok=int(ostatok), url_photo=save_file_name)
         db.session.add(data)
         db.session.commit()
         flash('Товар добавлен')
