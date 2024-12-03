@@ -46,6 +46,10 @@ def index():
 @app.route('/user_data', methods=['GET', 'POST'])
 def user_data():
     if current_user.is_authenticated:
+        return render_template('user_data.html', user=current_user)
+    else:
+        return redirect(url_for('not_found_error'))
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
