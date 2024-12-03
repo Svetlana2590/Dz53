@@ -7,7 +7,6 @@ from forms import LoginForm, TovarForm
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 import uuid
 
-
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
 
@@ -22,6 +21,8 @@ migrate = Migrate(app, db)
 
 from models import User, Tovar, load_user
 
+korzina = []
+
 with app.app_context():
     db.create_all()
     have_user = User.query.first()
@@ -33,10 +34,12 @@ with app.app_context():
 
 
 @app.route('/')
+@app.route('/index')
 def index():
     # form=GoTovarForm()
     tovar = Tovar.query.all()
-    return render_template('index.html', tovars=tovar)
+
+    return render_template('index.html', tovars=tovar, korzina=len(korzina))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -46,7 +49,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(name=form.username.data).first()
-        print('*'*20)
+        print('*' * 20)
         print(user)
         if user is None or not user.check_password(form.pasword.data):
             flash('Invalid username or password')
@@ -76,13 +79,10 @@ def user_reg():
     return render_template('user_reg.html', form2=form3)
 
 
-
 @app.route('/tovar_add', methods=['GET', 'POST'])
 @login_required
 def tovar_add():
-    # us=load_user(current_user.id)
-    # if us.name:
-    #     flash(us.name)
+    flash(current_user.name)
     form = TovarForm()
     print('Func add work')
     if form.validate_on_submit():
@@ -129,6 +129,7 @@ def tovar_kupit():
     id = request.args.get('id')
     print(id)
     data = Tovar.query.get(id)
+    korzina.append(data)
     data.ostatok = data.ostatok - 1
     db.session.commit()
     print(data)
