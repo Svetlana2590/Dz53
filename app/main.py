@@ -38,8 +38,9 @@ with app.app_context():
 def index():
     global korzina
     tovar = Tovar.query.all()
+    kolvo = len(korzina)
 
-    return render_template('index.html', tovars=tovar, korzina=len(korzina))
+    return render_template('index.html', tovars=tovar, korzina=kolvo)
 
 
 @app.route('/login', methods=['GET', 'POST'])

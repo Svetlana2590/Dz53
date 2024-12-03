@@ -17,11 +17,21 @@ class User(UserMixin, db.Model):
     is_active = sa.Column(sa.Boolean, default=True)
     admin = sa.Column(sa.Boolean, default=False)
 
+    address = db.relationship('Address', backref='address', lazy='dynamic')
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class Address(db.Model):
+    id = sa.Column(sa.Integer, primary_key=True)
+    city = sa.Column(sa.String(255))
+    ulica = sa.Column(sa.String(255))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Tovar(db.Model):

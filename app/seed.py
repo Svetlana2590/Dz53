@@ -1,23 +1,25 @@
-from models import User, Tovar
+from models import User, Tovar, Address
 from main import db
 
 
 def seeds():
     data = User(name="Vasiliy", is_active=True)
     data.set_password('111')
-    data2 = User(name="Evgeniy", is_active=True)
-    data2.set_password('111')
-    data3 = User(name="Nikolay", is_active=True)
-    data3.set_password('111')
+    db.session.add(data)
+    db.session.commit()
+    db.session.refresh(data)
+    addr=Address(city='Kazan', ulica='Lenina', user_id=data.id)
+    addr2 = Address(city='Voronezh', ulica='Kosmonavtov', user_id=data.id)
+    db.session.add(addr)
+    db.session.add(addr2)
+    db.session.commit()
+
 
     data4 = Tovar(name="Костюм", price=50, ostatok=20, url_photo="111.jpg")
     data5 = Tovar(name="Брюки", price=150, ostatok=14, url_photo="111.jpg")
     data6 = Tovar(name="Рубашка", price=250, ostatok=10, url_photo="111.jpg")
 
-    db.session.add(data)
-    db.session.add(data2)
-    db.session.add(data3)
-    db.session.commit()
+
 
     db.session.add(data4)
     db.session.add(data5)
