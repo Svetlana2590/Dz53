@@ -7,7 +7,7 @@ def seeds():
     data.set_password('111')
     data2 = User(name="Evgeniy", is_active=True)
     data2.set_password('111')
-    data3 = User(name="Nikolay",  is_active=True)
+    data3 = User(name="Nikolay", is_active=True)
     data3.set_password('111')
 
     data4 = Tovar(name="Костюм", price=50, ostatok=20, url_photo="111.jpg")
@@ -23,4 +23,5 @@ def seeds():
     db.session.add(data5)
     db.session.add(data6)
     db.session.commit()
+
 

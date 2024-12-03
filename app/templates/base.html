@@ -24,9 +24,13 @@
     {% endif %}
 {% endwith %}
 <div class="col-md-12 text-center">
-      <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Каталог </a>
-      <a class="btn btn-outline-success" href="{{ url_for('login') }}">Аккаунт</a>
-      <a class="btn btn-outline-danger" href="{{ url_for('tovar_add') }}">Добавить товар</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Каталог </a>
+    <a class="btn btn-outline-danger" href="{{ url_for('tovar_add') }}">Добавить товар</a>
+    {% if current_user.is_anonymous %}
+      <a class="btn btn-outline-primary" href="{{ url_for('login') }}">Войти</a>
+    {% else %}
+      <a class="btn btn-outline-danger" href="{{ url_for('logout') }}">Выйти</a>
+    {% endif %}
 </div>
 <hr>
 {% block content %} {% endblock %}

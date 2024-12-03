@@ -1,4 +1,4 @@
-# from copy import deepcopy
+from copy import deepcopy
 
 a = [1, 2, 3, 4, 5]
 
@@ -9,3 +9,8 @@ a.append(6)
 
 print(a)
 print(b)
+
+c = 0.1
+d = 0.1
+e = 0.1
+print(c + d + e)

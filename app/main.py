@@ -4,8 +4,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from database import Config
 from forms import LoginForm, TovarForm
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 import uuid
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
@@ -54,6 +55,13 @@ def login():
 
         return redirect(url_for('index'))
     return render_template('login_enter.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 @app.route('/user_reg', methods=['GET', 'POST'])
 def user_reg():
