@@ -20,7 +20,7 @@ db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
 
-from models import User, Tovar
+from models import User, Tovar, load_user
 
 with app.app_context():
     db.create_all()
@@ -76,9 +76,13 @@ def user_reg():
     return render_template('user_reg.html', form2=form3)
 
 
-@app.route('/tovar_add', methods=['GET', 'POST'])
-def tovar_add():
 
+@app.route('/tovar_add', methods=['GET', 'POST'])
+@login_required
+def tovar_add():
+    # us=load_user(current_user.id)
+    # if us.name:
+    #     flash(us.name)
     form = TovarForm()
     print('Func add work')
     if form.validate_on_submit():

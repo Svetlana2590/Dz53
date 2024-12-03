@@ -25,7 +25,9 @@
 {% endwith %}
 <div class="col-md-12 text-center">
     <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Каталог </a>
+    {% if current_user.is_anonymous %} {% else %}
     <a class="btn btn-outline-danger" href="{{ url_for('tovar_add') }}">Добавить товар</a>
+{% endif %}
     {% if current_user.is_anonymous %}
       <a class="btn btn-outline-primary" href="{{ url_for('login') }}">Войти</a>
     {% else %}
