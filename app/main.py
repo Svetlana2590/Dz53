@@ -36,7 +36,7 @@ with app.app_context():
 @app.route('/')
 @app.route('/index')
 def index():
-    # form=GoTovarForm()
+    global korzina
     tovar = Tovar.query.all()
 
     return render_template('index.html', tovars=tovar, korzina=len(korzina))
@@ -128,6 +128,7 @@ def del_tovar(tovar_id: int):
 def tovar_kupit():
     id = request.args.get('id')
     print(id)
+    global korzina
     data = Tovar.query.get(id)
     korzina.append(data)
     data.ostatok = data.ostatok - 1
@@ -153,16 +154,25 @@ def name_tovar(tovar_id: int, new_name: str):
     return redirect(url_for('index'))
 
 
-# @app.route('/upload', methods=['POST'])
-# def upload():
-#     if request.method == 'POST':
-#         file = request.files['file']  # загрузка файла для дальнейшей обработки
-#         file.save(os.path.join('app/static', file.filename))  # сохранение
-#
-#         return redirect(request.referrer)
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(400)
+def error_400(error):
+    return render_template('400.html'), 400
+
+
+@app.errorhandler(401)
+def error_401(error):
+    return render_template('401.html'), 401
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
     app.run(port=5001, debug=True)
