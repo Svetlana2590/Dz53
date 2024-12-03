@@ -43,6 +43,11 @@ def index():
     return render_template('index.html', tovars=tovar, korzina=kolvo)
 
 
+@app.route('/user_data', methods=['GET', 'POST'])
+def user_data():
+    if current_user.is_authenticated:
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
