@@ -1,4 +1,3 @@
-import os
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -6,6 +5,9 @@ from database import Config
 from forms import LoginForm, TovarForm
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 import uuid
+import os
+from blueprints.db_blueprint import db_blueprint
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
@@ -14,6 +16,9 @@ app.config.from_object(Config)
 # Добавляем путь сохранения изображения
 # Это так же можно сделать (и правильно сделать) в классе конфиг
 app.config['UPLOAD_FOLDER'] = '/app/static'
+
+#регистрируем blueprint
+app.register_blueprint(db_blueprint)
 
 db = SQLAlchemy(app)
 
@@ -182,6 +187,30 @@ def error_401(error):
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part', 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return 'No selected file', 400
+
+# 1. Вывести в консоль тип файла
+    print(f'Тип файла: {file.content_type}')
+
+# 2. Создать имя файла с помощью uuid
+    extension = os.path.splitext(file.filename)[1]  # Получить расширение
+    new_filename = f"{uuid.uuid4()}{extension}"  # Создать новое имя
+    file.save(os.path.join('uploads', new_filename))  # Сохранить файл с новым именем
+
+# 3. Получить расширение файла и вывести в консоль
+    print(f'Расширение файла: {extension}')
+
+    return f'Файл загружен как {new_filename}', 200
 
 
 if __name__ == '__main__':
