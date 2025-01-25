@@ -9,6 +9,7 @@ from db_database_setup import Base
 import uuid
 import os
 from blueprints.db_blueprint import db_blueprint
+from flask_admin import Admin, ModelView
 
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -18,6 +19,8 @@ app.config.from_object(Config)
 # Добавляем путь сохранения изображения
 # Это так же можно сделать (и правильно сделать) в классе конфиг
 app.config['UPLOAD_FOLDER'] = '/app/static'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.db'
 
 #регистрируем blueprint
 app.register_blueprint(db_blueprint)
@@ -73,6 +76,19 @@ def seed_data(session):
 def get_user_orders(user_id, session):
     user = session.query(User).filter_by(id=user_id).first()
     return user.orders if user else []
+
+# Создание модели
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    author = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Book {self.title}>'
+
+# Инициализация Flask-Admin
+admin = Admin(app, name='Book Admin', template_mode='bootstrap3')
+admin.add_view(ModelView(Book, db.session))
 
 
 @app.route('/')
@@ -251,4 +267,5 @@ def upload_file():
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(port=5001, debug=True)
