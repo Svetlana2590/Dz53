@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request, request, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy, Column, Integer, ForeignKey
 from database import Config
@@ -13,6 +13,7 @@ from flask_admin import Admin, ModelView
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from pymongo import MongoClient
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
@@ -106,6 +107,27 @@ current_time = datetime.now().strftime('%H:%M')
 # Выводим результат
 print(f'Tекущая дата и время: {current_time}')
 print(f'Курс доллара: {dollar_rate}')
+
+
+#Создание Mongo
+client = MongoClient("mongodb://localhost:27017/")
+db = client['your_database_name']
+users_collection = db['users']
+
+#Вывод всех пользователей
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = list(users_collection.find())
+    for user in users:
+        user['_id'] = str(user['_id'])  # Преобразование ObjectId в строку
+    return jsonify(users), 200
+
+
+@app.route('/create_user', methods=['POST'])
+def create_user():
+    user_data = request.json
+    users_collection.insert_one(user_data)
+    return jsonify({"message": "User created successfully!"}), 201
 
 
 @app.route('/')
