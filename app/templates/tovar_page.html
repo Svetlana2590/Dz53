@@ -4,3 +4,25 @@
 {{ data.name }}</p>
     {{ data.price }}
 {% endblock %}
+
+   {% for product in products.items %}
+       <div>
+           <h2>{{ product.name }}</h2>
+           <p>{{ product.description }}</p>
+       </div>
+   {% endfor %}
+
+   <div>
+       {% if products.has_prev %}
+           <a href="{{ url_for('products', page=products.prev_num) }}">Назад</a>
+       {% endif %}
+
+       <span>Страница {{ products.page }} из {{ products.pages }}</span>
+
+       {% if products.has_next %}
+           <a href="{{ url_for('products', page=products.next_num) }}">Вперед</a>
+       {% endif %}
+   </div>
+      {% if products.total > 100 %}
+       <p>Показано не более 100 товаров.</p>
+   {% endif %}

@@ -1,19 +1,13 @@
-from flask import Flask, render_template, flash, redirect, url_for, request, request, jsonify
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy, Column, Integer, ForeignKey
+from flask_sqlalchemy import SQLAlchemy
 from database import Config
 from forms import LoginForm, TovarForm
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
-from sqlalchemy.orm import relationship
-from db_database_setup import Base
+from myapp.models import Product
 import uuid
 import os
-from blueprints.db_blueprint import db_blueprint
-from flask_admin import Admin, ModelView
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
-from pymongo import MongoClient
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
@@ -23,10 +17,7 @@ app.config.from_object(Config)
 # Это так же можно сделать (и правильно сделать) в классе конфиг
 app.config['UPLOAD_FOLDER'] = '/app/static'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.db'
 
-#регистрируем blueprint
-app.register_blueprint(db_blueprint)
 
 db = SQLAlchemy(app)
 
@@ -45,89 +36,12 @@ with app.app_context():
 
         seeds()
 
-#Создание модели
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    orders = relationship('Order', back_populates='user')
-
-class Order(Base):
-    __tablename__ = 'orders'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='orders')
-
-
-#Добавление данных
-def seed_data(session):
-    user1 = User()
-    user2 = User()
-    session.add(user1)
-    session.add(user2)
-    session.commit()
-
-    order1 = Order(user_id=user1.id)
-    order2 = Order(user_id=user1.id)
-    order3 = Order(user_id=user2.id)
-
-    session.add(order1)
-    session.add(order2)
-    session.add(order3)
-    session.commit()
-
-#Вывод заказов
-def get_user_orders(user_id, session):
-    user = session.query(User).filter_by(id=user_id).first()
-    return user.orders if user else []
-
-# Создание модели
-class Book(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    author = db.Column(db.String(100), nullable=False)
-
-    def __repr__(self):
-        return f'<Book {self.title}>'
-
-# Инициализация Flask-Admin
-admin = Admin(app, name='Book Admin', template_mode='bootstrap3')
-admin.add_view(ModelView(Book, db.session))
-
-# Получаем страницу сайта ЦБ РФ
-url = 'https://www.cbr.ru/'
-response = requests.get(url)
-soup = BeautifulSoup(response.text, 'html.parser')
-
-# Находим курс доллара
-dollar_rate = soup.find('div', class_='rate').find('span', class_='value').text
-
-# Получаем текущее время
-current_time = datetime.now().strftime('%H:%M')
-
-# Выводим результат
-print(f'Tекущая дата и время: {current_time}')
-print(f'Курс доллара: {dollar_rate}')
-
-
-#Создание Mongo
-client = MongoClient("mongodb://localhost:27017/")
-db = client['your_database_name']
-users_collection = db['users']
-
-#Вывод всех пользователей
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = list(users_collection.find())
-    for user in users:
-        user['_id'] = str(user['_id'])  # Преобразование ObjectId в строку
-    return jsonify(users), 200
-
-
-@app.route('/create_user', methods=['POST'])
-def create_user():
-    user_data = request.json
-    users_collection.insert_one(user_data)
-    return jsonify({"message": "User created successfully!"}), 201
+@app.route('/products')
+   def products():
+       page = request.args.get('page', 1, type=int)
+       per_page = 10  # Количество товаров на странице
+       products = Product.query.paginate(page, per_page, error_out=False)
+       return render_template('products.html', products=products)
 
 
 @app.route('/')
@@ -281,30 +195,5 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return 'No file part', 400
-
-    file = request.files['file']
-
-    if file.filename == '':
-        return 'No selected file', 400
-
-# 1. Вывести в консоль тип файла
-    print(f'Тип файла: {file.content_type}')
-
-# 2. Создать имя файла с помощью uuid
-    extension = os.path.splitext(file.filename)[1]  # Получить расширение
-    new_filename = f"{uuid.uuid4()}{extension}"  # Создать новое имя
-    file.save(os.path.join('uploads', new_filename))  # Сохранить файл с новым именем
-
-# 3. Получить расширение файла и вывести в консоль
-    print(f'Расширение файла: {extension}')
-
-    return f'Файл загружен как {new_filename}', 200
-
-
 if __name__ == '__main__':
-    db.create_all()
     app.run(port=5001, debug=True)
