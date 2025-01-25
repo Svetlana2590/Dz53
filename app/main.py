@@ -1,9 +1,11 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, Column, Integer, ForeignKey
 from database import Config
 from forms import LoginForm, TovarForm
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+from sqlalchemy.orm import relationship
+from db_database_setup import Base
 import uuid
 import os
 from blueprints.db_blueprint import db_blueprint
@@ -36,6 +38,41 @@ with app.app_context():
         from seed import seeds
 
         seeds()
+
+#Создание модели
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    orders = relationship('Order', back_populates='user')
+
+class Order(Base):
+    __tablename__ = 'orders'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship('User', back_populates='orders')
+
+
+#Добавление данных
+def seed_data(session):
+    user1 = User()
+    user2 = User()
+    session.add(user1)
+    session.add(user2)
+    session.commit()
+
+    order1 = Order(user_id=user1.id)
+    order2 = Order(user_id=user1.id)
+    order3 = Order(user_id=user2.id)
+
+    session.add(order1)
+    session.add(order2)
+    session.add(order3)
+    session.commit()
+
+#Вывод заказов
+def get_user_orders(user_id, session):
+    user = session.query(User).filter_by(id=user_id).first()
+    return user.orders if user else []
 
 
 @app.route('/')
