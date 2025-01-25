@@ -36,12 +36,39 @@ with app.app_context():
 
         seeds()
 
-@app.route('/products')
-   def products():
-       page = request.args.get('page', 1, type=int)
-       per_page = 10  # Количество товаров на странице
-       products = Product.query.paginate(page, per_page, error_out=False)
-       return render_template('products.html', products=products)
+from faker import Faker
+import random
+
+fake = Faker('ru_RU')
+
+# Генерация категорий
+categories = ['Одежда', 'Обувь', 'Для дома']
+products = []
+
+# Генерация товаров
+for _ in range(300):
+    product = {
+        'name': fake.catch_phrase(),  # Название товара
+        'category': random.choice(categories),  # Случайная категория
+        'price': round(random.uniform(100, 5000), 2),  # Случайная цена
+        'description': fake.text(max_nb_chars=200)  # Описание товара
+    }
+    products.append(product)
+
+# Генерация пользователей
+users = []
+for _ in range(100):
+    user = {
+        'username': fake.user_name(),
+        'email': fake.email(),
+        'full_name': fake.name(),
+        'address': fake.address(),
+        'phone_number': fake.phone_number()
+    }
+    users.append(user)
+
+print(products)
+print(users)
 
 
 @app.route('/')
