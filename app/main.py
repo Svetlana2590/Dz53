@@ -10,7 +10,9 @@ import uuid
 import os
 from blueprints.db_blueprint import db_blueprint
 from flask_admin import Admin, ModelView
-
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 login_manager = LoginManager(app)
@@ -89,6 +91,21 @@ class Book(db.Model):
 # Инициализация Flask-Admin
 admin = Admin(app, name='Book Admin', template_mode='bootstrap3')
 admin.add_view(ModelView(Book, db.session))
+
+# Получаем страницу сайта ЦБ РФ
+url = 'https://www.cbr.ru/'
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Находим курс доллара
+dollar_rate = soup.find('div', class_='rate').find('span', class_='value').text
+
+# Получаем текущее время
+current_time = datetime.now().strftime('%H:%M')
+
+# Выводим результат
+print(f'Tекущая дата и время: {current_time}')
+print(f'Курс доллара: {dollar_rate}')
 
 
 @app.route('/')
